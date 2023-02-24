@@ -1,6 +1,49 @@
-import { FC } from "react";
+import { Input } from "antd";
+import axios from "axios";
+import { useWeb3 } from "evm-web3-hooks";
+import Link from "next/link";
+import { FC, useEffect, useState } from "react";
+import { IUserInfo } from "./signup";
 
 const Home: FC = () => {
-  return <div style={{ backgroundImage: "url('/image/homeBg.jpg')", width: "100vw", height: "100vh" }}></div>;
+  const { web3Data } = useWeb3();
+  const [userInfo, setUSerInfo] = useState<IUserInfo | null>(null);
+  useEffect(() => {
+    if (!web3Data.accounts?.[0]) return;
+    axios
+      .get("/api/get-user-profile", {
+        params: {
+          walletAddress: web3Data.accounts[0],
+        },
+      })
+      .then((userInfo) => {
+        if (!userInfo.data.userData.Title) {
+          setUSerInfo(() => null);
+        } else {
+          setUSerInfo(() => userInfo.data.userData);
+        }
+      });
+  }, [web3Data.accounts?.[0]]);
+  return (
+    <>
+      {web3Data.accounts?.[0] ? (
+        <>
+          {userInfo ? (
+            <div>
+              <Input addonBefore="UserName" value={JSON.parse(userInfo.stringifiedBasicInfo).userName} />
+              <Input addonBefore="Email" value={JSON.parse(userInfo.stringifiedBasicInfo).email} />
+              Update you profile check <Link href={"/signup"}>HERE</Link>
+            </div>
+          ) : (
+            <div>
+              You not signed up yet, sign up <Link href="/signup">HERE</Link>
+            </div>
+          )}
+        </>
+      ) : (
+        <>Connect Your Wallet first</>
+      )}
+    </>
+  );
 };
 export default Home;

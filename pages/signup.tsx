@@ -1,11 +1,14 @@
+import { Button, Input, Space } from "antd";
+import axios from "axios";
 import { useWeb3 } from "evm-web3-hooks";
-import { ChangeEvent, FC, useState } from "react";
+import Link from "next/link";
+import { FC, useState } from "react";
 
-interface IUserInfo {
+export interface IUserInfo {
+  Title: string; // Default field for 365
   walletAddress: string;
   basicInfoSignature: string;
   stringifiedBasicInfo: string;
-  profileImage: string;
 }
 interface IBasicInfo {
   userName: string;
@@ -15,7 +18,6 @@ interface IBasicInfo {
 const SignUp: FC = () => {
   const { web3Data } = useWeb3();
   const [basicInfo, setBasicInfo] = useState<IBasicInfo>({} as IBasicInfo);
-  const [profileImage, setProfileImage] = useState<string>("");
 
   const signUp = async () => {
     const stringifiedBasicInfo = JSON.stringify(basicInfo);
@@ -24,38 +26,31 @@ const SignUp: FC = () => {
     console.log({ signature });
 
     const userInfo: IUserInfo = {
+      Title: web3Data.accounts[0],
       walletAddress: web3Data.accounts[0],
       basicInfoSignature: signature,
       stringifiedBasicInfo,
-      profileImage,
     };
 
-    // TODO
-    // Store Data into database
-
-    const signer = await web3Data.web3.eth.personal.ecRecover(stringifiedBasicInfo, signature);
-    console.log({ signer });
+    await axios.post("/api/update-user-profile", userInfo);
   };
 
-  function uploadImage(event: ChangeEvent<HTMLInputElement>): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64String = reader.result as string;
-      setProfileImage(base64String);
-    };
-    reader.readAsDataURL(file);
-  }
   return (
     <>
-      <input type="file" onChange={uploadImage} />
-      <div>Input UserName</div>
-      <input type="text" onChange={(evt) => setBasicInfo((old) => ({ ...old, userName: evt.target.value }))} />
-      <div>Input Email</div>
-      <input type="text" onChange={(evt) => setBasicInfo((old) => ({ ...old, email: evt.target.value }))} />
-      <div onClick={signUp}>Sign up</div>
+      <Input
+        addonBefore="Input UserName"
+        type="text"
+        onChange={(evt) => setBasicInfo((old) => ({ ...old, userName: evt.target.value }))}
+      />
+      <Input
+        addonBefore="Input Email"
+        type="text"
+        onChange={(evt) => setBasicInfo((old) => ({ ...old, email: evt.target.value }))}
+      />
+      <div>
+        <Button onClick={signUp}>SIGN UP / UPDATE</Button>
+      </div>
+      Back to <Link href={"/"}>HOME</Link>
     </>
   );
 };

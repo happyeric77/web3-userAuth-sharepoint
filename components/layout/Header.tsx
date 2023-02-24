@@ -4,7 +4,6 @@ import { Button, Avatar, Tooltip, Dropdown, Space } from "antd";
 import { WalletOutlined, DisconnectOutlined, UserOutlined, DownOutlined } from "@ant-design/icons";
 import { supportedChains } from "../../utils/constant";
 import { FC } from "react";
-import Link from "next/link";
 import { useWeb3 } from "evm-web3-hooks";
 
 const Header: FC = () => {
@@ -22,7 +21,6 @@ const Header: FC = () => {
           Colorful DAPP
         </div>
         <Space size="large">
-          <Link href="/approve-erc20">Approve Token</Link>
           <Dropdown
             menu={{
               items: Object.keys(supportedChains).map((chain, key) => ({

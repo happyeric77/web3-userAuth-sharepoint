@@ -1,7 +1,7 @@
 import { Web3ContextProvider } from "evm-web3-hooks";
 import { FC, useEffect, useState } from "react";
 import LoadingContext, { ILoading } from "./useLoading";
-import { EAlertStatus, INotify, NotifyContext } from "./useNotify";
+import { INotify, NotifyContext } from "./useNotify";
 interface Props {
   children: React.ReactNode;
 }
