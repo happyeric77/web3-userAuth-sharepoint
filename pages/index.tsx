@@ -20,7 +20,11 @@ const Home: FC = () => {
         if (!userInfo.data.userData.Title) {
           setUSerInfo(() => null);
         } else {
-          setUSerInfo(() => userInfo.data.userData);
+          const userData = userInfo.data.userData as IUserInfo;
+          const signer = web3Data.web3.eth.accounts.recover(userData.stringifiedBasicInfo, userData.basicInfoSignature);
+          if (signer !== web3Data.accounts[0])
+            return alert("Your profile data might have been hacked, please reset and contact admin");
+          setUSerInfo(() => userData);
         }
       });
   }, [web3Data.accounts?.[0]]);

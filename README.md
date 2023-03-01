@@ -8,7 +8,7 @@ The project is built on top of
 2. [Microsoft Graph api auth package](https://www.npmjs.com/package/ms365-graph-api-auth)
 3. [evm web3 react hook](https://www.npmjs.com/package/evm-web3-hooks)
 
-Check the tutorial video [here](TODO)
+Check the tutorial video [here](https://youtu.be/e_q9b8sTID8)
 
 # How to use
 
